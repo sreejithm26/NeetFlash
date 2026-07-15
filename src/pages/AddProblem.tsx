@@ -144,7 +144,7 @@ export const AddProblem: React.FC = () => {
       setBatchProgress({ current: i + 1, total: slugs.length, message: `Fetching data for ${slug}...` });
       
       try {
-        const q = await fetchLeetCodeData(slug);
+        const q = await ApiService.fetchLeetCode(slug);
         if (!q) throw new Error('Question not found');
 
         const cleanContent = cleanHtmlContent(q.content);
