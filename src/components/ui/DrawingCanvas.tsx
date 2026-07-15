@@ -118,7 +118,8 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
       return; // Never draw if this is a pan pointer
     }
 
-    if (!isEditing || e.buttons !== 1) return; // Only draw when active and editing
+    if (!isEditing) return;
+    if (currentStroke.length === 0) return; // Only draw if a stroke is actively started
     if (!containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
