@@ -11,19 +11,10 @@
 }
 
 .header {
-  position: absolute;
-  top: 16px;
-  left: 24px;
-  right: 24px;
+  padding: 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 10;
-  pointer-events: none; /* Let clicks pass through to canvas when not on buttons */
-}
-
-.header > * {
-  pointer-events: auto; /* Re-enable clicks for header content */
 }
 
 .title {
