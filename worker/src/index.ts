@@ -15,6 +15,25 @@ app.onError((err, c) => {
   return c.json({ error: err.message }, 500);
 });
 
+// LeetCode GraphQL Proxy
+app.post('/api/leetcode', async (c) => {
+  try {
+    const body = await c.req.json();
+    const res = await fetch('https://leetcode.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    return c.json(data);
+  } catch (err: any) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
 // GET all problems
 app.get('/api/problems', async (c) => {
   try {

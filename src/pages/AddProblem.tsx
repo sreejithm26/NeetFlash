@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { AIService } from '../services/ai';
+import { ApiService } from '../services/api';
 import { INITIAL_SM2_DATA } from '../utils/sm2';
 import classes from './AddProblem.module.css';
 
@@ -33,31 +34,6 @@ export const AddProblem: React.FC = () => {
   const addProblem = useStore(state => state.addProblem);
   const navigate = useNavigate();
 
-  // Helper to fetch question data from LeetCode
-  const fetchLeetCodeData = async (slug: string) => {
-    const res = await fetch('/api/leetcode', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: `
-          query questionData($titleSlug: String!) {
-            question(titleSlug: $titleSlug) {
-              questionFrontendId
-              title
-              content
-              difficulty
-            }
-          }
-        `,
-        variables: { titleSlug: slug }
-      })
-    });
-    
-    if (!res.ok) throw new Error('API request failed');
-    const data = await res.json();
-    return data.data?.question;
-  };
-
   // Helper to clean HTML content
   const cleanHtmlContent = (html: string) => {
     return html
@@ -80,7 +56,7 @@ export const AddProblem: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        fetchLeetCodeData(slug)
+        ApiService.fetchLeetCode(slug)
           .then(q => {
             if (q) {
               setProblemNumber(q.questionFrontendId);
@@ -94,7 +70,7 @@ export const AddProblem: React.FC = () => {
             }
           })
           .catch(() => {
-            setError('Failed to fetch problem from URL. The Vite proxy might be restarting, please try again.');
+            setError('Failed to fetch problem from URL. Please try again.');
           })
           .finally(() => {
             setLoading(false);

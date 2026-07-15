@@ -48,5 +48,28 @@ export const ApiService = {
     await fetch(`${API_URL}/problems/${problemId}`, {
       method: 'DELETE'
     });
+  },
+
+  async fetchLeetCode(slug: string) {
+    const res = await fetch(`${API_URL}/leetcode`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: `
+          query questionData($titleSlug: String!) {
+            question(titleSlug: $titleSlug) {
+              questionFrontendId
+              title
+              content
+              difficulty
+            }
+          }
+        `,
+        variables: { titleSlug: slug }
+      })
+    });
+    if (!res.ok) throw new Error('API request failed');
+    const data = await res.json();
+    return data.data?.question;
   }
 };
