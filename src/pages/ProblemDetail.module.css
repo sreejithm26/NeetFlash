@@ -1,0 +1,386 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.backButton {
+  align-self: flex-start;
+  margin-bottom: -16px;
+}
+
+.headerActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.title {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.notFound {
+  text-align: center;
+  padding: 80px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-hover);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerCard {
+  padding: 32px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.pattern {
+  font-size: 14px;
+  color: var(--accent-primary);
+  font-weight: 600;
+  padding: 6px 12px;
+  background: rgba(124, 58, 237, 0.1);
+  border-radius: 100px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.description, .notes {
+  margin-top: 24px;
+}
+
+.description h3, .notes h3 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+}
+
+.notes p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.markdownContent {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.7;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.markdownContent h1, .markdownContent h2, .markdownContent h3 {
+  color: var(--text-primary);
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-family: var(--font-heading);
+}
+
+.markdownContent p {
+  margin-bottom: 16px;
+}
+
+.markdownContent code {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+.markdownContent pre {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.markdownContent pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.mainGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .mainGrid {
+    flex-direction: row;
+  }
+}
+
+.leftPane {
+  flex: 1.2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.rightPane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  position: sticky;
+  top: 32px;
+}
+
+.codeContainer {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.05);
+  overflow-x: auto;
+}
+
+.codeContainer pre {
+  margin: 0;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-hover);
+}
+
+.flashcardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 32px;
+}
+
+.flashcardWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flashcardHeader {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 8px;
+}
+
+/* Modal View */
+.reviewModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.reviewHeader h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+}
+
+.carouselContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  gap: 32px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carouselActive {
+  width: 500px;
+  max-width: 90%;
+  z-index: 10;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slideFromLeft {
+  animation: slideFromLeftKey 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.slideFromRight {
+  animation: slideFromRightKey 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.carouselSide {
+  flex: 1;
+  display: flex;
+  cursor: pointer;
+  opacity: 0.2;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
+  user-select: none;
+  max-width: 320px;
+}
+
+.carouselSideDisabled {
+  cursor: default;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.carouselSide:hover {
+  opacity: 0.55;
+}
+
+.carouselLeft {
+  justify-content: flex-end;
+  transform: translateX(-60px) scale(0.8);
+  animation: leftEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.carouselRight {
+  justify-content: flex-start;
+  transform: translateX(60px) scale(0.8);
+  animation: rightEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.scaledCardWrapper {
+  pointer-events: none; /* Let container handle clicks */
+  width: 100%;
+}
+
+.reviewControls {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px;
+  margin-top: auto;
+  z-index: 20;
+}
+
+@keyframes slideFromLeftKey {
+  from {
+    opacity: 0;
+    transform: translateX(-150px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideFromRightKey {
+  from {
+    opacity: 0;
+    transform: translateX(150px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes leftEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-100px) scale(0.7);
+  }
+  to {
+    opacity: 0.2;
+    transform: translateX(-60px) scale(0.8);
+  }
+}
+
+@keyframes rightEnter {
+  from {
+    opacity: 0;
+    transform: translateX(100px) scale(0.7);
+  }
+  to {
+    opacity: 0.2;
+    transform: translateX(60px) scale(0.8);
+  }
+}

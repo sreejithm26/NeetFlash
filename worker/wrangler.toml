@@ -1,0 +1,12 @@
+name = "leetcode-backend"
+main = "src/index.ts"
+compatibility_date = "2023-12-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "neetflash_database"
+database_id = "19d1763f-3dbc-4daa-aed3-9c3b82b4668b"
+
+[[kv_namespaces]]
+binding = "DRAWINGS"
+id = "2df4e6a9d42e420daca1694099687d85"
