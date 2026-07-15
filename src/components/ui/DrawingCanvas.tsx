@@ -31,7 +31,8 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
   const [mode, setMode] = useState<'draw' | 'pan'>('draw');
   const [isEditing, setIsEditing] = useState(!defaultLocked);
   
-  const panPointersRef = useRef<Set<number>>(new Set());
+  const activePanPointersRef = useRef<Map<number, {x: number, y: number}>>(new Map());
+  const initialPinchRef = useRef<{ distance: number, scale: number, center: {x: number, y: number}, camera: {x: number, y: number} } | null>(null);
   const panStartRef = useRef<{ pointerId: number; clientX: number; clientY: number; cameraX: number; cameraY: number } | null>(null);
 
   const [currentColor, setCurrentColor] = useState(COLORS[0]);
@@ -82,10 +83,9 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
     const shouldPan = !isEditing || mode === 'pan' || e.pointerType === 'touch' || e.button === 1 || e.button === 2;
     
     if (shouldPan) {
-      panPointersRef.current.add(e.pointerId);
+      activePanPointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
       
-      // If this is the active panning pointer (first one down), set it up
-      if (!panStartRef.current) {
+      if (activePanPointersRef.current.size === 1) {
         panStartRef.current = {
           pointerId: e.pointerId,
           clientX: e.clientX,
@@ -93,6 +93,18 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
           cameraX: camera.x,
           cameraY: camera.y
         };
+      } else if (activePanPointersRef.current.size === 2) {
+        const pts = Array.from(activePanPointersRef.current.values());
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const center = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+        
+        initialPinchRef.current = {
+          distance: dist,
+          scale: scale,
+          center: center,
+          camera: { x: camera.x, y: camera.y }
+        };
+        panStartRef.current = null; // Disable single finger pan while pinching
       }
       return;
     }
@@ -106,8 +118,34 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (panPointersRef.current.has(e.pointerId)) {
-      if (panStartRef.current && panStartRef.current.pointerId === e.pointerId) {
+    if (activePanPointersRef.current.has(e.pointerId)) {
+      activePanPointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      
+      if (activePanPointersRef.current.size === 2 && initialPinchRef.current) {
+        const pts = Array.from(activePanPointersRef.current.values());
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        const newCenter = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+        
+        const scaleFactor = dist / initialPinchRef.current.distance;
+        const newScale = Math.min(Math.max(0.1, initialPinchRef.current.scale * scaleFactor), 10);
+        
+        if (containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          const cursorX = initialPinchRef.current.center.x - rect.left;
+          const cursorY = initialPinchRef.current.center.y - rect.top;
+          
+          const initial = initialPinchRef.current;
+          
+          const newX = cursorX - ((cursorX - initial.camera.x) / initial.scale) * newScale;
+          const newY = cursorY - ((cursorY - initial.camera.y) / initial.scale) * newScale;
+          
+          const dx = newCenter.x - initial.center.x;
+          const dy = newCenter.y - initial.center.y;
+          
+          setCamera({ x: newX + dx, y: newY + dy });
+          setScale(newScale);
+        }
+      } else if (activePanPointersRef.current.size === 1 && panStartRef.current && panStartRef.current.pointerId === e.pointerId) {
         const dx = e.clientX - panStartRef.current.clientX;
         const dy = e.clientY - panStartRef.current.clientY;
         setCamera({
@@ -132,9 +170,23 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
   const handlePointerUp = (e: React.PointerEvent) => {
     e.currentTarget.releasePointerCapture(e.pointerId);
     
-    if (panPointersRef.current.has(e.pointerId)) {
-      panPointersRef.current.delete(e.pointerId);
-      if (panStartRef.current?.pointerId === e.pointerId) {
+    if (activePanPointersRef.current.has(e.pointerId)) {
+      activePanPointersRef.current.delete(e.pointerId);
+      
+      if (activePanPointersRef.current.size < 2) {
+        initialPinchRef.current = null;
+      }
+      
+      if (activePanPointersRef.current.size === 1) {
+        const remaining = Array.from(activePanPointersRef.current.entries())[0];
+        panStartRef.current = {
+          pointerId: remaining[0],
+          clientX: remaining[1].x,
+          clientY: remaining[1].y,
+          cameraX: camera.x,
+          cameraY: camera.y
+        };
+      } else if (activePanPointersRef.current.size === 0) {
         panStartRef.current = null;
       }
       return;
@@ -294,7 +346,7 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
                   key={i} 
                   points={pointsStr} 
                   stroke={col} 
-                  strokeWidth="3" 
+                  strokeWidth="1.5" 
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
                   fill="none" 
@@ -307,7 +359,7 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
                   ? `${currentStroke[0][0]},${currentStroke[0][1]} ${currentStroke[0][0]},${currentStroke[0][1] + 0.001}` 
                   : currentStroke.map(p => `${p[0]},${p[1]}`).join(' ')}
                 stroke={currentColor} 
-                strokeWidth="3" 
+                strokeWidth="1.5" 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
                 fill="none" 
