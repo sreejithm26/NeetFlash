@@ -57,7 +57,7 @@ app.get('/api/problems', async (c) => {
       front: f.front,
       back: f.back,
       sm2Data: {
-        nextReview: f.nextReview,
+        nextReviewDate: f.nextReview,
         interval: f.interval,
         easeFactor: f.easeFactor,
         repetitions: f.repetitions
@@ -96,14 +96,15 @@ app.post('/api/problems', async (c) => {
       `);
       
       const batch = flashcards.map((f: any) => {
-        const sm2 = f.sm2Data || { nextReview: new Date().toISOString(), interval: 0, easeFactor: 2.5, repetitions: 0 };
+        const sm2 = f.sm2Data || { nextReviewDate: new Date().toISOString(), interval: 0, easeFactor: 2.5, repetitions: 0 };
+        const nextReview = sm2.nextReviewDate || sm2.nextReview || new Date().toISOString();
         return stmt.bind(
           f.id, 
           f.problemId, 
           f.title, 
           f.front, 
           f.back, 
-          sm2.nextReview, 
+          nextReview, 
           sm2.interval, 
           sm2.easeFactor, 
           sm2.repetitions
@@ -169,8 +170,24 @@ app.put('/api/flashcards/:id', async (c) => {
   const updates = await c.req.json();
   
   try {
-    const fields = Object.keys(updates).map(k => `${k} = ?`).join(', ');
-    const values = Object.values(updates);
+    let finalUpdates = { ...updates };
+    
+    // Spread sm2Data if it exists
+    if (finalUpdates.sm2Data) {
+      const sm2 = finalUpdates.sm2Data;
+      if (sm2.nextReviewDate) finalUpdates.nextReview = sm2.nextReviewDate;
+      if (sm2.interval !== undefined) finalUpdates.interval = sm2.interval;
+      if (sm2.easeFactor !== undefined) finalUpdates.easeFactor = sm2.easeFactor;
+      if (sm2.repetitions !== undefined) finalUpdates.repetitions = sm2.repetitions;
+      delete finalUpdates.sm2Data;
+    }
+
+    if (Object.keys(finalUpdates).length === 0) {
+      return c.json({ success: true });
+    }
+
+    const fields = Object.keys(finalUpdates).map(k => `${k} = ?`).join(', ');
+    const values = Object.values(finalUpdates);
     
     await c.env.DB.prepare(`UPDATE flashcards SET ${fields} WHERE id = ?`)
       .bind(...values, id)
