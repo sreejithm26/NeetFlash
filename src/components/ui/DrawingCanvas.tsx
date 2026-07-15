@@ -195,10 +195,11 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
   };
 
   const strokeOptions = {
-    size: 6,
-    thinning: 0.7,
-    smoothing: 0.8,
-    streamline: 0.7,
+    size: 3,
+    thinning: 0,
+    smoothing: 0.1,
+    streamline: 0.1,
+    simulatePressure: false,
     easing: (t: number) => t,
     start: { taper: 0, easing: (t: number) => t, cap: true },
     end: { taper: 0, easing: (t: number) => t, cap: true }
@@ -304,17 +305,35 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
               const pts = Array.isArray(stroke) ? stroke : stroke.points;
               const col = Array.isArray(stroke) ? '#1a1a1a' : stroke.color;
               
-              const strokeData = getStroke(pts, strokeOptions);
-              const pathData = getSvgPathFromStroke(strokeData);
+              if (!pts || pts.length === 0) return null;
+              
+              // Handle single point (dot)
+              const pointsStr = pts.length === 1 
+                ? `${pts[0][0]},${pts[0][1]} ${pts[0][0]},${pts[0][1] + 0.001}`
+                : pts.map((p: any) => `${p[0]},${p[1]}`).join(' ');
+
               return (
-                <path key={i} d={pathData} fill={col} className={classes.stroke} />
+                <polyline 
+                  key={i} 
+                  points={pointsStr} 
+                  stroke={col} 
+                  strokeWidth="3" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  fill="none" 
+                />
               );
             })}
             {currentStroke.length > 0 && (
-              <path 
-                d={getSvgPathFromStroke(getStroke(currentStroke, strokeOptions))}
-                fill={currentColor}
-                className={classes.stroke} 
+              <polyline 
+                points={currentStroke.length === 1 
+                  ? `${currentStroke[0][0]},${currentStroke[0][1]} ${currentStroke[0][0]},${currentStroke[0][1] + 0.001}` 
+                  : currentStroke.map(p => `${p[0]},${p[1]}`).join(' ')}
+                stroke={currentColor} 
+                strokeWidth="3" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                fill="none" 
               />
             )}
           </g>
