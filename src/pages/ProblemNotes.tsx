@@ -50,7 +50,7 @@ export const ProblemNotes: React.FC = () => {
         </Button>
       </header>
 
-      <div style={{ flex: 1, minHeight: '600px', width: '100%', position: 'relative' }}>
+      <div style={{ position: 'absolute', inset: 0, width: '100vw', height: '100vh' }}>
         {!isLoaded ? (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             Loading notes...

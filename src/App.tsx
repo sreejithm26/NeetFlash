@@ -48,12 +48,6 @@ function App() {
             >
               Graph
             </NavLink>
-            <NavLink 
-              to="/scratchpad" 
-              className={({ isActive }) => isActive ? `${classes.navLink} ${classes.navLinkActive}` : classes.navLink}
-            >
-              Scratchpad
-            </NavLink>
           </nav>
         </header>
         <main className={classes.mainContent}>

@@ -195,10 +195,10 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ initialStrokes = E
   };
 
   const strokeOptions = {
-    size: 4,
-    thinning: 0.6,
-    smoothing: 0.4,
-    streamline: 0.3,
+    size: 6,
+    thinning: 0.7,
+    smoothing: 0.8,
+    streamline: 0.7,
     easing: (t: number) => t,
     start: { taper: 0, easing: (t: number) => t, cap: true },
     end: { taper: 0, easing: (t: number) => t, cap: true }
