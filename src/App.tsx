@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Link } from 'react-router-dom';
 
 import { Dashboard } from './pages/Dashboard';

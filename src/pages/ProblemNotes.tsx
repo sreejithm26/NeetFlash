@@ -44,7 +44,7 @@ export const ProblemNotes: React.FC = () => {
           <h1 className={classes.title}>Notes: {problem.title}</h1>
           <p className={classes.subtitle}>Use your Apple Pencil to sketch out algorithms</p>
         </div>
-        <Button variant="outline" onClick={() => navigate(`/problem/${id}`)}>
+        <Button variant="ghost" onClick={() => navigate(`/problem/${id}`)}>
           <ArrowLeft size={16} style={{ marginRight: '8px' }} />
           Back to Problem
         </Button>

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { useNavigate } from 'react-router-dom';
 import { Focus } from 'lucide-react';
@@ -22,7 +22,7 @@ interface GraphLink {
 export function ZettelkastenMap() {
   const problems = useStore(state => state.problems);
   const navigate = useNavigate();
-  const graphRef = useRef<any>();
+  const graphRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
